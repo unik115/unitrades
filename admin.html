@@ -633,6 +633,11 @@
       ensureCurrentUserIsListed();
       refreshAdminView();
 
+      // Periodic refresh so admin sees users created from other devices
+      setInterval(() => {
+        refreshAdminView().catch((err) => console.warn('refreshAdminView error:', err));
+      }, 5000);
+
       document.getElementById('adminLogoutButton').addEventListener('click', function () {
         localStorage.removeItem('unitrades_current_user');
         window.location.href = 'login.html';
