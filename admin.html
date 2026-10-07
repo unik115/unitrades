@@ -82,7 +82,7 @@
       }
       .field textarea { min-height: 120px; resize: vertical; }
       .field input::-webkit-outer-spin-button, .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-      .field input[type="number"] { -moz-appearance: textfield; }
+      .field input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
       .button-row { display: flex; flex-wrap: wrap; gap: 12px; }
       .btn {
         border: none; border-radius: 12px; padding: 12px 18px; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
@@ -185,6 +185,32 @@
     <script>
       const USERS_KEY = 'unitrades_users';
       const ADMIN_SELECTED_KEY = 'unitrades_admin_selected_user';
+      const DEFAULT_API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin;
+      const API_BASE = window.UNITRADES_API_BASE || DEFAULT_API_BASE;
+
+      async function apiRequest(path, options = {}) {
+        const response = await fetch(`${API_BASE}${path}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...(options.headers || {})
+          },
+          ...options
+        });
+
+        const contentType = response.headers.get('content-type') || '';
+        const payload = contentType.includes('application/json') ? await response.json() : await response.text();
+
+        if (!response.ok) {
+          throw new Error(payload && typeof payload === 'object' && payload.error ? payload.error : 'Request failed.');
+        }
+
+        return payload;
+      }
+
+      function notifyUsersUpdated() {
+        localStorage.setItem('unitrades_users_updated', String(Date.now()));
+        window.dispatchEvent(new Event('unitrades:users-updated'));
+      }
 
       function money(value) {
         return `$${Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -229,37 +255,39 @@
         return Array.from(merged.values());
       }
 
-      function getUsers() {
+      function readLocalUsers() {
         try {
           const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-          const cleanUsers = dedupeUsers(users).map((user) => ({
-            ...user,
-            dashboard: {
-              balance: Number(user.dashboard?.balance || 0),
-              profit: Number(user.dashboard?.profit || 0),
-              positions: Number(user.dashboard?.positions || 0),
-              winRate: Number(user.dashboard?.winRate || 0),
-              btcWatch: Number(user.dashboard?.btcWatch || 0),
-              ethWatch: Number(user.dashboard?.ethWatch || 0),
-              recentActivity: Array.isArray(user.dashboard?.recentActivity) && user.dashboard.recentActivity.length ? user.dashboard.recentActivity : ['No recent activity']
-            }
-          }));
-
-          if (cleanUsers.length !== users.length) {
-            localStorage.setItem(USERS_KEY, JSON.stringify(cleanUsers));
-          }
-
-          return cleanUsers;
+          return dedupeUsers(users);
         } catch (error) {
           return [];
         }
+      }
+
+      function writeLocalUsers(users) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(dedupeUsers(users)));
+      }
+
+      async function getUsers() {
+        try {
+          const result = await apiRequest('/api/users');
+          if (Array.isArray(result.users)) {
+            writeLocalUsers(result.users);
+            return result.users;
+          }
+        } catch (error) {
+          const localUsers = readLocalUsers();
+          if (localUsers.length) return localUsers;
+        }
+
+        return readLocalUsers();
       }
 
       function ensureCurrentUserIsListed() {
         const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
         if (!currentUser || !currentUser.email) return;
 
-        const users = getUsers();
+        const users = readLocalUsers();
         const email = currentUser.email.toLowerCase();
         const exists = users.some((user) => (user.email || '').toLowerCase() === email);
 
@@ -280,12 +308,13 @@
               recentActivity: ['No recent activity']
             }
           });
-          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          writeLocalUsers(users);
         }
       }
 
-      function saveUsers(users) {
-        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      async function saveUsers(users) {
+        writeLocalUsers(users);
+        notifyUsersUpdated();
 
         const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
         if (!currentUser || !currentUser.email) return;
@@ -300,10 +329,19 @@
           role: liveUser.role || 'user',
           dashboard: liveUser.dashboard || {}
         }));
+
+        try {
+          await apiRequest(`/api/users/${encodeURIComponent(liveUser.email)}`, {
+            method: 'PUT',
+            body: JSON.stringify(liveUser)
+          });
+        } catch (error) {
+          console.warn('Server sync skipped:', error.message);
+        }
       }
 
       function ensureDemoUsers() {
-        let users = getUsers();
+        const users = readLocalUsers();
 
         if (!users.some((user) => user.email && user.email.toLowerCase() === 'admin@unitrades.com')) {
           users.push({
@@ -325,48 +363,46 @@
         }
 
         if (!users.length) {
-          users = [
-            {
-              firstName: 'John',
-              lastName: 'Miller',
-              email: 'john@unitrades.test',
-              password: 'demo123',
-              role: 'user',
-              dashboard: {
-                balance: 28000,
-                profit: 7600,
-                positions: 4,
-                winRate: 62.5,
-                btcWatch: 84320,
-                ethWatch: 3240,
-                recentActivity: ['BTC buy order | 2 hours ago', 'ETH rebalance | 5 hours ago']
-              }
-            },
-            {
-              firstName: 'Aisha',
-              lastName: 'Rahman',
-              email: 'aisha@unitrades.test',
-              password: 'demo123',
-              role: 'user',
-              dashboard: {
-                balance: 145000,
-                profit: 42000,
-                positions: 9,
-                winRate: 76.2,
-                btcWatch: 85120,
-                ethWatch: 3380,
-                recentActivity: ['Portfolio update | 1 day ago', 'USDT withdrawal | 2 days ago']
-              }
+          users.push({
+            firstName: 'John',
+            lastName: 'Miller',
+            email: 'john@unitrades.test',
+            password: 'demo123',
+            role: 'user',
+            dashboard: {
+              balance: 28000,
+              profit: 7600,
+              positions: 4,
+              winRate: 62.5,
+              btcWatch: 84320,
+              ethWatch: 3240,
+              recentActivity: ['BTC buy order | 2 hours ago', 'ETH rebalance | 5 hours ago']
             }
-          ];
+          });
+          users.push({
+            firstName: 'Aisha',
+            lastName: 'Rahman',
+            email: 'aisha@unitrades.test',
+            password: 'demo123',
+            role: 'user',
+            dashboard: {
+              balance: 145000,
+              profit: 42000,
+              positions: 9,
+              winRate: 76.2,
+              btcWatch: 85120,
+              ethWatch: 3380,
+              recentActivity: ['Portfolio update | 1 day ago', 'USDT withdrawal | 2 days ago']
+            }
+          });
         }
 
-        saveUsers(users);
+        writeLocalUsers(users);
         return users;
       }
 
       function getSelectedUserEmail() {
-        const users = getUsers();
+        const users = readLocalUsers();
         const saved = localStorage.getItem(ADMIN_SELECTED_KEY);
         if (saved && users.some((user) => user.email === saved)) {
           return saved;
@@ -389,7 +425,7 @@
       }
 
       function renderSummary() {
-        const users = getUsers();
+        const users = readLocalUsers();
         const totalUsers = users.length;
         const totalBalance = users.reduce((sum, user) => sum + Number(user.dashboard?.balance || 0), 0);
         const totalProfit = users.reduce((sum, user) => sum + Number(user.dashboard?.profit || 0), 0);
@@ -402,7 +438,7 @@
       }
 
       function renderUserList() {
-        const users = getUsers();
+        const users = readLocalUsers();
         const selectedEmail = getSelectedUserEmail();
 
         const list = document.getElementById('userList');
@@ -424,7 +460,7 @@
       }
 
       function fillForm() {
-        const users = getUsers();
+        const users = readLocalUsers();
         const selected = users.find((user) => user.email === getSelectedUserEmail()) || users[0];
 
         if (!selected) return;
@@ -440,8 +476,8 @@
         document.getElementById('fundInput').value = '';
       }
 
-      function saveSelectedChanges() {
-        const users = getUsers();
+      async function saveSelectedChanges() {
+        const users = readLocalUsers();
         const selectedEmail = getSelectedUserEmail();
         const index = users.findIndex((user) => user.email === selectedEmail);
 
@@ -460,14 +496,14 @@
         user.dashboard.ethWatch = Number(document.getElementById('ethInput').value || 0);
         user.dashboard.recentActivity = parseActivities(document.getElementById('activityInput').value);
 
-        saveUsers(users);
+        await saveUsers(users);
         renderSummary();
         renderUserList();
         setStatus('Dashboard updated successfully.');
       }
 
-      function fakeFundSelectedUser() {
-        const users = getUsers();
+      async function fakeFundSelectedUser() {
+        const users = readLocalUsers();
         const selectedEmail = getSelectedUserEmail();
         const index = users.findIndex((user) => user.email === selectedEmail);
         const amount = Number(document.getElementById('fundInput').value || 0);
@@ -491,15 +527,15 @@
           ...(Array.isArray(user.dashboard.recentActivity) ? user.dashboard.recentActivity : ['No recent activity'])
         ].slice(0, 6);
 
-        saveUsers(users);
+        await saveUsers(users);
         renderSummary();
         renderUserList();
         fillForm();
         setStatus('User dashboard funded successfully.');
       }
 
-      function removeFundsFromSelectedUser() {
-        const users = getUsers();
+      async function removeFundsFromSelectedUser() {
+        const users = readLocalUsers();
         const selectedEmail = getSelectedUserEmail();
         const index = users.findIndex((user) => user.email === selectedEmail);
         const amount = Number(document.getElementById('fundInput').value || 0);
@@ -526,15 +562,15 @@
           ...(Array.isArray(user.dashboard.recentActivity) ? user.dashboard.recentActivity : ['No recent activity'])
         ].slice(0, 6);
 
-        saveUsers(users);
+        await saveUsers(users);
         renderSummary();
         renderUserList();
         fillForm();
         setStatus('Funds removed successfully.');
       }
 
-      function resetSelectedActivity() {
-        const users = getUsers();
+      async function resetSelectedActivity() {
+        const users = readLocalUsers();
         const selectedEmail = getSelectedUserEmail();
         const index = users.findIndex((user) => user.email === selectedEmail);
 
@@ -545,7 +581,7 @@
 
         users[index].dashboard = users[index].dashboard || {};
         users[index].dashboard.recentActivity = ['No recent activity'];
-        saveUsers(users);
+        await saveUsers(users);
         fillForm();
         setStatus('Recent activity reset.');
       }
@@ -558,7 +594,7 @@
 
       function ensureAdminAccess() {
         const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
-        const users = getUsers();
+        const users = readLocalUsers();
         const activeUser = users.find((user) =>
           user.email && currentUser && currentUser.email && user.email.toLowerCase() === currentUser.email.toLowerCase()
         );
@@ -574,15 +610,28 @@
         return true;
       }
 
+      async function refreshAdminView() {
+        const freshUsers = await getUsers();
+        writeLocalUsers(freshUsers);
+        renderSummary();
+        renderUserList();
+        fillForm();
+      }
+
       if (!ensureAdminAccess()) {
         throw new Error('Unauthorized access');
       }
 
+      window.addEventListener('unitrades:users-updated', () => refreshAdminView());
+      window.addEventListener('storage', function (event) {
+        if (event.key === USERS_KEY || event.key === 'unitrades_users_updated') {
+          refreshAdminView();
+        }
+      });
+
       ensureDemoUsers();
       ensureCurrentUserIsListed();
-      renderSummary();
-      renderUserList();
-      fillForm();
+      refreshAdminView();
 
       document.getElementById('adminLogoutButton').addEventListener('click', function () {
         localStorage.removeItem('unitrades_current_user');

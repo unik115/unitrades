@@ -2146,62 +2146,80 @@
 
                 const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
 
+                async function loadDashboardUser() {
+                  const currentSessionUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
+                  if (!currentSessionUser || !currentSessionUser.email) return null;
+
+                  const API_BASE = window.UNITRADES_API_BASE || (window.location.protocol === 'file:' ? 'http://localhost:3000' : window.location.origin);
+
+                  try {
+                    const response = await fetch(`${API_BASE}/api/users`);
+                    const data = await response.json();
+                    const users = Array.isArray(data.users) ? data.users : [];
+                    const userRecord = users.find((user) => user.email && currentSessionUser.email && user.email.toLowerCase() === currentSessionUser.email.toLowerCase()) || currentSessionUser;
+
+                    if (userRecord && userRecord.email) {
+                      localStorage.setItem('unitrades_current_user', JSON.stringify({
+                        firstName: userRecord.firstName || currentSessionUser.firstName || 'Trader',
+                        lastName: userRecord.lastName || currentSessionUser.lastName || '',
+                        email: userRecord.email,
+                        role: userRecord.role || currentSessionUser.role || 'user',
+                        dashboard: userRecord.dashboard || currentSessionUser.dashboard || {}
+                      }));
+                    }
+
+                    return userRecord || currentSessionUser;
+                  } catch (error) {
+                    const users = JSON.parse(localStorage.getItem('unitrades_users') || '[]');
+                    return users.find((user) => user.email && currentSessionUser.email && user.email.toLowerCase() === currentSessionUser.email.toLowerCase()) || currentSessionUser;
+                  }
+                }
+
                 if (currentUser) {
-                  const users = JSON.parse(localStorage.getItem('unitrades_users') || '[]');
-                  const userRecord = users.find((user) => user.email && currentUser.email && user.email.toLowerCase() === currentUser.email.toLowerCase()) || currentUser;
-                  const dashboard = userRecord.dashboard || {};
+                  loadDashboardUser().then((userRecord) => {
+                    const dashboard = (userRecord && userRecord.dashboard) || {};
+                    const balance = Number(dashboard.balance || 0);
+                    const profit = Number(dashboard.profit || 0);
+                    const positions = Number(dashboard.positions || 0);
+                    const rate = Number(dashboard.winRate || 0);
+                    const activity = Array.isArray(dashboard.recentActivity) && dashboard.recentActivity.length ? dashboard.recentActivity : ['No recent activity'];
 
-                  if (userRecord && userRecord.email) {
-                    localStorage.setItem('unitrades_current_user', JSON.stringify({
-                      firstName: userRecord.firstName || currentUser.firstName || 'Trader',
-                      lastName: userRecord.lastName || currentUser.lastName || '',
-                      email: userRecord.email,
-                      role: userRecord.role || currentUser.role || 'user',
-                      dashboard: dashboard
-                    }));
-                  }
+                    if (accountBadge) {
+                      accountBadge.hidden = false;
+                      accountBadge.innerHTML = `Welcome, ${userRecord?.firstName || currentUser.firstName || 'Trader'} <a href="#" class="logout-link" id="logoutLink">Logout</a>`;
 
-                  const balance = Number(dashboard.balance || 0);
-                  const profit = Number(dashboard.profit || 0);
-                  const positions = Number(dashboard.positions || 0);
-                  const rate = Number(dashboard.winRate || 0);
-                  const activity = Array.isArray(dashboard.recentActivity) && dashboard.recentActivity.length ? dashboard.recentActivity : ['No recent activity'];
+                      document.getElementById('logoutLink').addEventListener('click', function (event) {
+                        event.preventDefault();
+                        localStorage.removeItem('unitrades_current_user');
+                        window.location.reload();
+                      });
+                    }
 
-                  if (accountBadge) {
-                    accountBadge.hidden = false;
-                    accountBadge.innerHTML = `Welcome, ${userRecord.firstName || currentUser.firstName || 'Trader'} <a href="#" class="logout-link" id="logoutLink">Logout</a>`;
+                    if (dashboardUserName) {
+                      dashboardUserName.textContent = userRecord?.firstName || currentUser.firstName || 'Trader';
+                    }
 
-                    document.getElementById('logoutLink').addEventListener('click', function (event) {
-                      event.preventDefault();
-                      localStorage.removeItem('unitrades_current_user');
-                      window.location.reload();
+                    if (dashboardShell) {
+                      dashboardShell.classList.add('visible');
+                    }
+
+                    if (guestHero) {
+                      guestHero.style.display = 'none';
+                    }
+
+                    guestSections.forEach((section) => {
+                      section.style.display = 'none';
                     });
-                  }
 
-                  if (dashboardUserName) {
-                    dashboardUserName.textContent = userRecord.firstName || currentUser.firstName || 'Trader';
-                  }
-
-                  if (dashboardShell) {
-                    dashboardShell.classList.add('visible');
-                  }
-
-                  if (guestHero) {
-                    guestHero.style.display = 'none';
-                  }
-
-                  guestSections.forEach((section) => {
-                    section.style.display = 'none';
+                    if (totalBalance) totalBalance.textContent = `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    if (netProfit) netProfit.textContent = `$${profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    if (openPositions) openPositions.textContent = positions;
+                    if (winRate) winRate.textContent = `${rate.toFixed(1)}%`;
+                    if (btcWatch) btcWatch.textContent = `$${Number(dashboard.btcWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    if (ethWatch) ethWatch.textContent = `$${Number(dashboard.ethWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                    renderDashboardActivity(activity);
+                    renderTopInvestors();
                   });
-
-                  if (totalBalance) totalBalance.textContent = `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                  if (netProfit) netProfit.textContent = `$${profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                  if (openPositions) openPositions.textContent = positions;
-                  if (winRate) winRate.textContent = `${rate.toFixed(1)}%`;
-                  if (btcWatch) btcWatch.textContent = `$${Number(dashboard.btcWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                  if (ethWatch) ethWatch.textContent = `$${Number(dashboard.ethWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                  renderDashboardActivity(activity);
-                  renderTopInvestors();
                 }
 
                 authTabs.forEach((tab) => {
