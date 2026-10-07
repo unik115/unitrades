@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNITRADES | Deposit</title>
+    <style>
+      :root {
+        --bg: #090d17;
+        --bg-2: #111a2c;
+        --panel: rgba(15, 22, 36, 0.9);
+        --primary: #d4af37;
+        --primary-soft: #f5d66d;
+        --text: #f5efe4;
+        --muted: #b9b2a1;
+        --soft: #f6f1e7;
+        --line: rgba(214, 182, 94, 0.18);
+        --success: #7be7b2;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(180deg, #090d17 0%, #111a2c 38%, #0f1724 100%);
+        color: var(--text);
+      }
+
+      a { color: inherit; text-decoration: none; }
+
+      .wallet-page {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 42px 20px;
+      }
+
+      .wallet-card {
+        width: min(860px, 100%);
+        border-radius: 28px;
+        border: 1px solid var(--line);
+        background: rgba(15, 22, 36, 0.88);
+        box-shadow: 0 30px 90px rgba(0,0,0,0.45);
+        padding: 32px 28px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: clamp(1.8rem, 3vw, 2.8rem);
+        font-weight: 800;
+        letter-spacing: -0.08em;
+        margin-bottom: 20px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #f9df8a, #c89b3c 42%, #4b3411 100%);
+        box-shadow: 0 0 24px rgba(212, 175, 55, 0.35);
+        border: 2px solid rgba(255,255,255,0.18);
+        position: relative;
+      }
+
+      .brand-mark::before {
+        content: "U";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #101720;
+      }
+
+      .title {
+        margin: 0 0 24px;
+        font-size: clamp(2.1rem, 4vw, 3.2rem);
+        letter-spacing: -0.06em;
+      }
+
+      .wallet-blocks {
+        display: grid;
+        gap: 18px;
+      }
+
+      .wallet-item {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 18px 18px 16px;
+      }
+
+      .wallet-label {
+        display: inline-block;
+        margin-bottom: 10px;
+        color: var(--primary-soft);
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .wallet-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .wallet-address {
+        flex: 1;
+        min-width: 0;
+        background: rgba(9, 13, 23, 0.75);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 12px;
+        color: var(--soft);
+        font-size: 0.95rem;
+        padding: 14px 16px;
+        word-break: break-all;
+      }
+
+      .copy-btn {
+        min-width: 110px;
+        min-height: 48px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(245, 214, 109, 1), rgba(212, 175, 55, 0.96));
+        color: #14120d;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .footer-note {
+        margin-top: 22px;
+        color: var(--muted);
+        font-size: 0.96rem;
+        text-align: center;
+      }
+
+      .link-back {
+        color: var(--primary-soft);
+        font-weight: 700;
+      }
+
+      @media (max-width: 640px) {
+        .wallet-row { flex-direction: column; }
+        .copy-btn { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wallet-page">
+      <div class="wallet-card">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>UNITRADES</div>
+        <h1 class="title">Wallet address</h1>
+
+        <div class="wallet-blocks">
+          <div class="wallet-item">
+            <span class="wallet-label">BTC</span>
+            <div class="wallet-row">
+              <div class="wallet-address">1BMQMTJjVuL87pnWFsRVCvCX4qaTAbiYYg</div>
+              <button class="copy-btn" type="button" data-copy="1BMQMTJjVuL87pnWFsRVCvCX4qaTAbiYYg">Copy</button>
+            </div>
+          </div>
+
+          <div class="wallet-item">
+            <span class="wallet-label">Ethereum</span>
+            <div class="wallet-row">
+              <div class="wallet-address">0x08f280abfdc68298aec44ff582893529beeefeac</div>
+              <button class="copy-btn" type="button" data-copy="0x08f280abfdc68298aec44ff582893529beeefeac">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <a href="index.html" class="link-back">Back to dashboard</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll('.copy-btn').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const value = button.getAttribute('data-copy');
+          try {
+            await navigator.clipboard.writeText(value);
+            const original = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => {
+              button.textContent = original;
+            }, 1200);
+          } catch (error) {
+            button.textContent = 'Failed';
+            setTimeout(() => {
+              button.textContent = 'Copy';
+            }, 1200);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNITRADES | Admin Control</title>
+    <style>
+      :root {
+        --bg: #0a1017;
+        --bg-2: #111d2b;
+        --panel: rgba(14, 21, 31, 0.96);
+        --panel-soft: rgba(20, 31, 44, 0.94);
+        --line: rgba(212, 175, 55, 0.18);
+        --gold: #d4af37;
+        --gold-soft: #f7d77a;
+        --text: #f5efe4;
+        --muted: #b9b2a3;
+        --success: #7ae7ba;
+        --danger: #ff7f7f;
+        --shadow: 0 22px 65px rgba(0, 0, 0, 0.35);
+      }
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+        color: var(--text);
+      }
+      a { color: inherit; text-decoration: none; }
+      .container { width: min(1240px, calc(100% - 32px)); margin: 36px auto 60px; }
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;
+      }
+      .brand { display: inline-flex; align-items: center; gap: 12px; font-size: clamp(1.6rem, 3vw, 2.5rem); font-weight: 800; letter-spacing: -0.08em; }
+      .brand-mark {
+        width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #f9df8a, #c89b3c 42%, #4b3411 100%);
+        box-shadow: 0 0 24px rgba(212,175,55,0.3); border: 2px solid rgba(255,255,255,0.18); position: relative;
+      }
+      .brand-mark::before { content: "U"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 1rem; font-weight: 800; color: #101720; }
+      .nav-link {
+        display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.02); color: var(--muted); }
+      .logout-btn {
+        display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,127,127,0.28); background: rgba(255,127,127,0.08); color: #ffdada; cursor: pointer;
+      }
+      .layout {
+        display: grid; grid-template-columns: minmax(260px, 320px) minmax(0, 1fr); gap: 22px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .sidebar { padding: 18px; }
+      .sidebar h2, .main-panel h2 { margin: 0 0 16px; font-size: 1.2rem; letter-spacing: -0.05em; }
+      .user-list { display: grid; gap: 12px; }
+      .user-card {
+        width: 100%; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); border-radius: 16px; padding: 14px 12px; text-align: left; color: var(--text); cursor: pointer; transition: 0.2s ease;
+      }
+      .user-card:hover, .user-card.active { border-color: rgba(212,175,55,0.5); background: rgba(212,175,55,0.06); }
+      .user-card strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+      .user-card span { display: block; color: var(--muted); font-size: 0.8rem; }
+      .main-panel { padding: 18px 18px 22px; }
+      .summary-grid {
+        display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 20px;
+      }
+      .summary-card {
+        background: var(--panel-soft); border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 14px 16px;
+      }
+      .summary-card .label { color: var(--muted); font-size: 0.74rem; letter-spacing: 0.12em; text-transform: uppercase; }
+      .summary-card .value { margin-top: 10px; font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.04em; }
+      .editor { display: grid; gap: 18px; }
+      .form-grid {
+        display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px;
+      }
+      .field { display: grid; gap: 8px; }
+      .field label { font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+      .field input, .field textarea {
+        width: 100%; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(255,255,255,0.02); color: var(--text); padding: 12px 14px; font-size: 0.96rem; font-family: inherit;
+      }
+      .field textarea { min-height: 120px; resize: vertical; }
+      .field input::-webkit-outer-spin-button, .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+      .field input[type="number"] { -moz-appearance: textfield; }
+      .button-row { display: flex; flex-wrap: wrap; gap: 12px; }
+      .btn {
+        border: none; border-radius: 12px; padding: 12px 18px; font-size: 0.9rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+      }
+      .btn.primary { background: linear-gradient(135deg, var(--gold-soft), var(--gold)); color: #14120d; }
+      .btn.secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: var(--text); }
+      .btn.warning { background: rgba(255,127,127,0.12); border: 1px solid rgba(255,127,127,0.3); color: #ffdada; }
+      .status { min-height: 24px; margin-top: 8px; font-size: 0.92rem; color: var(--success); }
+      .status.error { color: var(--danger); }
+      @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .summary-grid, .form-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>UNITRADES</div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <a class="nav-link" href="index.html">← Back to site</a>
+          <button id="adminLogoutButton" class="logout-btn" type="button">Logout</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <aside class="panel sidebar">
+          <h2>Registered users</h2>
+          <div id="userList" class="user-list"></div>
+        </aside>
+
+        <main class="panel main-panel">
+          <h2 id="selectedUserTitle">Admin dashboard editor</h2>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="label">Total users</div>
+              <div id="totalUsers" class="value">0</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Total balance</div>
+              <div id="totalBalance" class="value">$0</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Total profit</div>
+              <div id="totalProfit" class="value">$0</div>
+            </div>
+            <div class="summary-card">
+              <div class="label">Avg. win rate</div>
+              <div id="avgWinRate" class="value">0%</div>
+            </div>
+          </div>
+
+          <div class="editor">
+            <div class="form-grid">
+              <div class="field">
+                <label for="balanceInput">Balance</label>
+                <input id="balanceInput" type="number" step="0.01" min="0" placeholder="25000" />
+              </div>
+              <div class="field">
+                <label for="profitInput">Profit</label>
+                <input id="profitInput" type="number" step="0.01" min="0" placeholder="15000" />
+              </div>
+              <div class="field">
+                <label for="positionsInput">Open positions</label>
+                <input id="positionsInput" type="number" step="1" min="0" placeholder="3" />
+              </div>
+              <div class="field">
+                <label for="winRateInput">Win rate (%)</label>
+                <input id="winRateInput" type="number" step="0.1" min="0" max="100" placeholder="62.5" />
+              </div>
+              <div class="field">
+                <label for="btcInput">BTC watch</label>
+                <input id="btcInput" type="number" step="0.01" min="0" placeholder="65000" />
+              </div>
+              <div class="field">
+                <label for="ethInput">ETH watch</label>
+                <input id="ethInput" type="number" step="0.01" min="0" placeholder="3500" />
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="fundInput">Quick fake fund ($)</label>
+                <input id="fundInput" type="number" step="100" min="0" placeholder="5000" />
+              </div>
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="activityInput">Recent activity (one item per line)</label>
+                <textarea id="activityInput" placeholder="BTC buy order | 2 hours ago&#10;ETH rebalance | 5 hours ago"></textarea>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button id="fundButton" type="button" class="btn primary">Fake fund user</button>
+              <button id="withdrawButton" type="button" class="btn secondary">Remove funds</button>
+              <button id="saveButton" type="button" class="btn secondary">Apply dashboard changes</button>
+              <button id="resetButton" type="button" class="btn warning">Reset activity</button>
+            </div>
+
+            <div id="statusMessage" class="status" aria-live="polite"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script>
+      const USERS_KEY = 'unitrades_users';
+      const ADMIN_SELECTED_KEY = 'unitrades_admin_selected_user';
+
+      function money(value) {
+        return `$${Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+
+      function normalizeEmail(value) {
+        return String(value || '').trim().toLowerCase();
+      }
+
+      function dedupeUsers(users) {
+        const merged = new Map();
+
+        users.forEach((user) => {
+          const email = normalizeEmail(user.email);
+          if (!email) return;
+
+          const existing = merged.get(email);
+          if (!existing) {
+            merged.set(email, { ...user, email });
+            return;
+          }
+
+          merged.set(email, {
+            ...existing,
+            ...user,
+            email,
+            firstName: user.firstName || existing.firstName || '',
+            lastName: user.lastName || existing.lastName || '',
+            role: user.role || existing.role || 'user',
+            dashboard: user.dashboard || existing.dashboard || {
+              balance: 0,
+              profit: 0,
+              positions: 0,
+              winRate: 0,
+              btcWatch: 0,
+              ethWatch: 0,
+              recentActivity: ['No recent activity']
+            }
+          });
+        });
+
+        return Array.from(merged.values());
+      }
+
+      function getUsers() {
+        try {
+          const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+          const cleanUsers = dedupeUsers(users).map((user) => ({
+            ...user,
+            dashboard: {
+              balance: Number(user.dashboard?.balance || 0),
+              profit: Number(user.dashboard?.profit || 0),
+              positions: Number(user.dashboard?.positions || 0),
+              winRate: Number(user.dashboard?.winRate || 0),
+              btcWatch: Number(user.dashboard?.btcWatch || 0),
+              ethWatch: Number(user.dashboard?.ethWatch || 0),
+              recentActivity: Array.isArray(user.dashboard?.recentActivity) && user.dashboard.recentActivity.length ? user.dashboard.recentActivity : ['No recent activity']
+            }
+          }));
+
+          if (cleanUsers.length !== users.length) {
+            localStorage.setItem(USERS_KEY, JSON.stringify(cleanUsers));
+          }
+
+          return cleanUsers;
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function ensureCurrentUserIsListed() {
+        const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
+        if (!currentUser || !currentUser.email) return;
+
+        const users = getUsers();
+        const email = currentUser.email.toLowerCase();
+        const exists = users.some((user) => (user.email || '').toLowerCase() === email);
+
+        if (!exists) {
+          users.push({
+            firstName: currentUser.firstName || 'User',
+            lastName: currentUser.lastName || '',
+            email: currentUser.email,
+            password: '',
+            role: currentUser.role || 'user',
+            dashboard: currentUser.dashboard || {
+              balance: 0,
+              profit: 0,
+              positions: 0,
+              winRate: 0,
+              btcWatch: 0,
+              ethWatch: 0,
+              recentActivity: ['No recent activity']
+            }
+          });
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+      }
+
+      function saveUsers(users) {
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+        const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
+        if (!currentUser || !currentUser.email) return;
+
+        const liveUser = users.find((user) => user.email && currentUser.email && user.email.toLowerCase() === currentUser.email.toLowerCase());
+        if (!liveUser) return;
+
+        localStorage.setItem('unitrades_current_user', JSON.stringify({
+          firstName: liveUser.firstName,
+          lastName: liveUser.lastName,
+          email: liveUser.email,
+          role: liveUser.role || 'user',
+          dashboard: liveUser.dashboard || {}
+        }));
+      }
+
+      function ensureDemoUsers() {
+        let users = getUsers();
+
+        if (!users.some((user) => user.email && user.email.toLowerCase() === 'admin@unitrades.com')) {
+          users.push({
+            firstName: 'Admin',
+            lastName: 'Control',
+            email: 'admin@unitrades.com',
+            password: 'admin123',
+            role: 'admin',
+            dashboard: {
+              balance: 450000,
+              profit: 180000,
+              positions: 14,
+              winRate: 81.4,
+              btcWatch: 86890,
+              ethWatch: 3560,
+              recentActivity: ['Market desk update | 30 mins ago', 'Admin allocation review | 2 hours ago']
+            }
+          });
+        }
+
+        if (!users.length) {
+          users = [
+            {
+              firstName: 'John',
+              lastName: 'Miller',
+              email: 'john@unitrades.test',
+              password: 'demo123',
+              role: 'user',
+              dashboard: {
+                balance: 28000,
+                profit: 7600,
+                positions: 4,
+                winRate: 62.5,
+                btcWatch: 84320,
+                ethWatch: 3240,
+                recentActivity: ['BTC buy order | 2 hours ago', 'ETH rebalance | 5 hours ago']
+              }
+            },
+            {
+              firstName: 'Aisha',
+              lastName: 'Rahman',
+              email: 'aisha@unitrades.test',
+              password: 'demo123',
+              role: 'user',
+              dashboard: {
+                balance: 145000,
+                profit: 42000,
+                positions: 9,
+                winRate: 76.2,
+                btcWatch: 85120,
+                ethWatch: 3380,
+                recentActivity: ['Portfolio update | 1 day ago', 'USDT withdrawal | 2 days ago']
+              }
+            }
+          ];
+        }
+
+        saveUsers(users);
+        return users;
+      }
+
+      function getSelectedUserEmail() {
+        const users = getUsers();
+        const saved = localStorage.getItem(ADMIN_SELECTED_KEY);
+        if (saved && users.some((user) => user.email === saved)) {
+          return saved;
+        }
+        return users[0]?.email || '';
+      }
+
+      function setSelectedUserEmail(email) {
+        localStorage.setItem(ADMIN_SELECTED_KEY, email || '');
+      }
+
+      function parseActivities(value) {
+        const lines = (value || '')
+          .split('\n')
+          .map((line) => line.trim())
+          .filter(Boolean);
+
+        if (!lines.length) return ['No recent activity'];
+        return lines;
+      }
+
+      function renderSummary() {
+        const users = getUsers();
+        const totalUsers = users.length;
+        const totalBalance = users.reduce((sum, user) => sum + Number(user.dashboard?.balance || 0), 0);
+        const totalProfit = users.reduce((sum, user) => sum + Number(user.dashboard?.profit || 0), 0);
+        const avgWinRate = totalUsers ? (users.reduce((sum, user) => sum + Number(user.dashboard?.winRate || 0), 0) / totalUsers) : 0;
+
+        document.getElementById('totalUsers').textContent = totalUsers;
+        document.getElementById('totalBalance').textContent = money(totalBalance);
+        document.getElementById('totalProfit').textContent = money(totalProfit);
+        document.getElementById('avgWinRate').textContent = `${avgWinRate.toFixed(1)}%`;
+      }
+
+      function renderUserList() {
+        const users = getUsers();
+        const selectedEmail = getSelectedUserEmail();
+
+        const list = document.getElementById('userList');
+        list.innerHTML = users.map((user) => `
+          <button class="user-card ${user.email === selectedEmail ? 'active' : ''}" data-email="${user.email}" type="button">
+            <strong>${user.firstName} ${user.lastName}</strong>
+            <span>${user.email}</span>
+            <span>${user.role || 'user'}</span>
+          </button>
+        `).join('');
+
+        list.querySelectorAll('.user-card').forEach((card) => {
+          card.addEventListener('click', () => {
+            setSelectedUserEmail(card.dataset.email);
+            renderUserList();
+            fillForm();
+          });
+        });
+      }
+
+      function fillForm() {
+        const users = getUsers();
+        const selected = users.find((user) => user.email === getSelectedUserEmail()) || users[0];
+
+        if (!selected) return;
+
+        document.getElementById('selectedUserTitle').textContent = `${selected.firstName} ${selected.lastName}'s dashboard`;
+        document.getElementById('balanceInput').value = Number(selected.dashboard?.balance || 0);
+        document.getElementById('profitInput').value = Number(selected.dashboard?.profit || 0);
+        document.getElementById('positionsInput').value = Number(selected.dashboard?.positions || 0);
+        document.getElementById('winRateInput').value = Number(selected.dashboard?.winRate || 0);
+        document.getElementById('btcInput').value = Number(selected.dashboard?.btcWatch || 0);
+        document.getElementById('ethInput').value = Number(selected.dashboard?.ethWatch || 0);
+        document.getElementById('activityInput').value = (Array.isArray(selected.dashboard?.recentActivity) ? selected.dashboard.recentActivity : ['No recent activity']).join('\n');
+        document.getElementById('fundInput').value = '';
+      }
+
+      function saveSelectedChanges() {
+        const users = getUsers();
+        const selectedEmail = getSelectedUserEmail();
+        const index = users.findIndex((user) => user.email === selectedEmail);
+
+        if (index === -1) {
+          setStatus('No user selected.', true);
+          return;
+        }
+
+        const user = users[index];
+        user.dashboard = user.dashboard || {};
+        user.dashboard.balance = Number(document.getElementById('balanceInput').value || 0);
+        user.dashboard.profit = Number(document.getElementById('profitInput').value || 0);
+        user.dashboard.positions = Number(document.getElementById('positionsInput').value || 0);
+        user.dashboard.winRate = Number(document.getElementById('winRateInput').value || 0);
+        user.dashboard.btcWatch = Number(document.getElementById('btcInput').value || 0);
+        user.dashboard.ethWatch = Number(document.getElementById('ethInput').value || 0);
+        user.dashboard.recentActivity = parseActivities(document.getElementById('activityInput').value);
+
+        saveUsers(users);
+        renderSummary();
+        renderUserList();
+        setStatus('Dashboard updated successfully.');
+      }
+
+      function fakeFundSelectedUser() {
+        const users = getUsers();
+        const selectedEmail = getSelectedUserEmail();
+        const index = users.findIndex((user) => user.email === selectedEmail);
+        const amount = Number(document.getElementById('fundInput').value || 0);
+
+        if (!selectedEmail || index === -1) {
+          setStatus('Select a user first.', true);
+          return;
+        }
+
+        if (!amount || amount <= 0) {
+          setStatus('Enter a fake fund amount greater than zero.', true);
+          return;
+        }
+
+        const user = users[index];
+        user.dashboard = user.dashboard || {};
+        user.dashboard.balance = Number(user.dashboard.balance || 0) + amount;
+        user.dashboard.profit = Number(user.dashboard.profit || 0) + (amount * 0.18);
+        user.dashboard.recentActivity = [
+          `Admin funded ${user.firstName} ${user.lastName} with $${amount.toLocaleString('en-US')}`,
+          ...(Array.isArray(user.dashboard.recentActivity) ? user.dashboard.recentActivity : ['No recent activity'])
+        ].slice(0, 6);
+
+        saveUsers(users);
+        renderSummary();
+        renderUserList();
+        fillForm();
+        setStatus('User dashboard funded successfully.');
+      }
+
+      function removeFundsFromSelectedUser() {
+        const users = getUsers();
+        const selectedEmail = getSelectedUserEmail();
+        const index = users.findIndex((user) => user.email === selectedEmail);
+        const amount = Number(document.getElementById('fundInput').value || 0);
+
+        if (!selectedEmail || index === -1) {
+          setStatus('Select a user first.', true);
+          return;
+        }
+
+        if (!amount || amount <= 0) {
+          setStatus('Enter an amount greater than zero to remove.', true);
+          return;
+        }
+
+        const user = users[index];
+        user.dashboard = user.dashboard || {};
+        const currentBalance = Number(user.dashboard.balance || 0);
+        const newBalance = Math.max(0, currentBalance - amount);
+
+        user.dashboard.balance = newBalance;
+        user.dashboard.profit = Math.max(0, Number(user.dashboard.profit || 0) - Math.min(Number(user.dashboard.profit || 0), amount * 0.1));
+        user.dashboard.recentActivity = [
+          `Admin removed $${amount.toLocaleString('en-US')} from ${user.firstName} ${user.lastName}`,
+          ...(Array.isArray(user.dashboard.recentActivity) ? user.dashboard.recentActivity : ['No recent activity'])
+        ].slice(0, 6);
+
+        saveUsers(users);
+        renderSummary();
+        renderUserList();
+        fillForm();
+        setStatus('Funds removed successfully.');
+      }
+
+      function resetSelectedActivity() {
+        const users = getUsers();
+        const selectedEmail = getSelectedUserEmail();
+        const index = users.findIndex((user) => user.email === selectedEmail);
+
+        if (index === -1) {
+          setStatus('Select a user first.', true);
+          return;
+        }
+
+        users[index].dashboard = users[index].dashboard || {};
+        users[index].dashboard.recentActivity = ['No recent activity'];
+        saveUsers(users);
+        fillForm();
+        setStatus('Recent activity reset.');
+      }
+
+      function setStatus(message, isError = false) {
+        const label = document.getElementById('statusMessage');
+        label.textContent = message;
+        label.classList.toggle('error', isError);
+      }
+
+      function ensureAdminAccess() {
+        const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
+        const users = getUsers();
+        const activeUser = users.find((user) =>
+          user.email && currentUser && currentUser.email && user.email.toLowerCase() === currentUser.email.toLowerCase()
+        );
+
+        const isAdmin = Boolean(activeUser && (activeUser.role === 'admin' || currentUser.role === 'admin'));
+
+        if (!currentUser || !currentUser.email || !isAdmin) {
+          localStorage.removeItem('unitrades_current_user');
+          window.location.href = 'login.html';
+          return false;
+        }
+
+        return true;
+      }
+
+      if (!ensureAdminAccess()) {
+        throw new Error('Unauthorized access');
+      }
+
+      ensureDemoUsers();
+      ensureCurrentUserIsListed();
+      renderSummary();
+      renderUserList();
+      fillForm();
+
+      document.getElementById('adminLogoutButton').addEventListener('click', function () {
+        localStorage.removeItem('unitrades_current_user');
+        window.location.href = 'login.html';
+      });
+
+      document.getElementById('saveButton').addEventListener('click', saveSelectedChanges);
+      document.getElementById('fundButton').addEventListener('click', fakeFundSelectedUser);
+      document.getElementById('withdrawButton').addEventListener('click', removeFundsFromSelectedUser);
+      document.getElementById('resetButton').addEventListener('click', resetSelectedActivity);
+    </script>
+  </body>
+</html>

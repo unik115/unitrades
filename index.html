@@ -1,0 +1,2365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNITRADES | Let’s Trade And Earn</title>
+    <meta
+      name="description"
+      content="UNITRADES is a next-generation crypto trading platform focused on smart execution, data-driven decision making, and scalable investor returns."
+    />
+    <style>
+      :root {
+        --bg: #090d17;
+        --bg-2: #111a2c;
+        --panel: rgba(15, 22, 36, 0.9);
+        --panel-strong: rgba(18, 27, 41, 0.98);
+        --card: rgba(18, 28, 40, 0.82);
+        --primary: #d4af37;
+        --primary-soft: #f5d66d;
+        --secondary: #8d6f3f;
+        --accent: #c89b3c;
+        --gold: #f1c75b;
+        --blue: #1b8cff;
+        --navy: #0d1320;
+        --text: #f5efe4;
+        --muted: #b9b2a2;
+        --soft: #f6f1e7;
+        --line: rgba(214, 182, 94, 0.18);
+        --success: #7be7b2;
+        --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #090d17 0%, #121b29 32%, #0f1724 100%);
+        color: var(--text);
+        font-family: "Segoe UI", Inter, Arial, sans-serif;
+        min-height: 100vh;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      .container {
+        width: min(1280px, calc(100% - 50px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(9, 13, 23, 0.94);
+        border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 110px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        font-size: clamp(2rem, 2.8vw, 3.6rem);
+        font-weight: 800;
+        letter-spacing: -0.08em;
+        line-height: 0.9;
+        color: #f9f3e8;
+      }
+
+      .brand-mark {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #f9df8a, #c89b3c 42%, #4b3411 100%);
+        box-shadow: 0 0 24px rgba(212, 175, 55, 0.35);
+        border: 2px solid rgba(255,255,255,0.18);
+        position: relative;
+      }
+
+      .brand-mark::before {
+        content: "U";
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #101720;
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .account-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 0 12px;
+        min-height: 44px;
+        font-size: 0.9rem;
+      }
+
+      .account-badge .logout-link {
+        color: var(--primary-soft);
+        font-weight: 700;
+      }
+
+      .language-switcher {
+        min-width: 140px;
+        height: 44px;
+        border-radius: 12px;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        padding: 0 14px;
+        font-size: 0.94rem;
+        outline: none;
+      }
+
+      .language-switcher option {
+        background: #111b2c;
+        color: var(--text);
+      }
+
+      .menu-button {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: rgba(255, 255, 255, 0.02);
+        position: relative;
+        cursor: pointer;
+      }
+
+      .menu-button span,
+      .menu-button span::before,
+      .menu-button span::after {
+        position: absolute;
+        left: 50%;
+        width: 34px;
+        height: 4px;
+        border-radius: 999px;
+        background: #edf5ff;
+        transform: translateX(-50%);
+        content: "";
+      }
+
+      .menu-button span {
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .menu-button span::before { top: -11px; }
+      .menu-button span::after { top: 11px; }
+
+      .hero {
+        position: relative;
+        overflow: hidden;
+        padding: 42px 0 60px;
+        min-height: 820px;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 18% 24%, rgba(212, 175, 55, 0.18), transparent 18%),
+          radial-gradient(circle at 72% 66%, rgba(139, 102, 40, 0.14), transparent 20%),
+          linear-gradient(180deg, rgba(14, 18, 30, 0.96), rgba(17, 18, 21, 0.72));
+        z-index: 0;
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        width: min(1280px, calc(100% - 50px));
+        margin: 0 auto;
+      }
+
+      .hero-grid {
+        position: relative;
+      }
+
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(8px);
+        opacity: 0.9;
+      }
+
+      .orb-one {
+        width: 150px;
+        height: 150px;
+        left: 18px;
+        top: 90px;
+        background: radial-gradient(circle at 35% 30%, rgba(212, 175, 55, 0.9), rgba(82, 62, 21, 0.7) 50%, rgba(20, 19, 46, 0.1) 70%);
+      }
+
+      .orb-two {
+        width: 180px;
+        height: 180px;
+        right: 120px;
+        top: 10px;
+        background: radial-gradient(circle at 35% 30%, rgba(245, 214, 109, 0.75), rgba(95, 73, 30, 0.6) 48%, rgba(15, 18, 35, 0.1) 70%);
+      }
+
+      .hero-copy {
+        position: relative;
+        padding-top: 60px;
+      }
+
+      .title {
+        font-size: clamp(3rem, 4.7vw, 7.2rem);
+        line-height: 0.92;
+        letter-spacing: -0.075em;
+        font-weight: 800;
+        max-width: 1200px;
+        margin: 0;
+        color: #eef5ff;
+      }
+
+      .title .accent {
+        display: block;
+        background: linear-gradient(90deg, #f4d57a, #d4af37 32%, #f3c95b 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .title-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 26px;
+      }
+
+      .title-mark::before {
+        content: "";
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 30%, #f8df8f, #d4af37 50%, #3b2b10 100%);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+      }
+
+      .ticker-wrap {
+        margin-top: 42px;
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .coin-badge {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 54px;
+      }
+
+      .coin-coin {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f8ddb2, #d4af37);
+        display: grid;
+        place-items: center;
+        color: #101720;
+        font-weight: 900;
+        font-size: 1.2rem;
+        border: 2px solid rgba(255,255,255,0.2);
+      }
+
+      .coin-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .coin-meta strong {
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        color: #f0f7ff;
+      }
+
+      .coin-meta span {
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+
+      .price-stack {
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+      }
+
+      .price-value {
+        font-size: clamp(2.6rem, 4vw, 4.5rem);
+        letter-spacing: -0.08em;
+        font-weight: 700;
+      }
+
+      .gain {
+        font-size: clamp(1.1rem, 1.8vw, 2rem);
+        color: var(--success);
+        letter-spacing: -0.04em;
+        font-weight: 700;
+      }
+
+      .chart-zone {
+        position: relative;
+        margin-top: 32px;
+        min-height: 340px;
+        height: 340px;
+        border-radius: 28px;
+        overflow: hidden;
+        background: rgba(9, 13, 23, 0.82);
+        border: 1px solid rgba(212, 175, 55, 0.18);
+      }
+
+      .chart-zone .tradingview-widget-container,
+      .chart-zone .tradingview-widget-container > div,
+      .chart-zone iframe {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .chart-zone svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      .chart-grid {
+        opacity: 0.18;
+        stroke: rgba(122, 197, 255, 0.62);
+      }
+
+      .chart-line {
+        fill: none;
+        stroke: rgba(245, 214, 109, 0.95);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.45));
+      }
+
+      .chart-node {
+        fill: rgba(212, 175, 55, 0.9);
+      }
+
+      .chat-pill {
+        position: absolute;
+        right: 35px;
+        bottom: 26px;
+        width: 188px;
+        height: 76px;
+        background: linear-gradient(135deg, rgba(245, 214, 109, 0.98), rgba(180, 139, 48, 0.95));
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px 0 16px;
+        box-shadow: 0 22px 40px rgba(212, 175, 55, 0.22);
+        cursor: pointer;
+        border: 1px solid rgba(255,255,255,0.15);
+      }
+
+      .chat-pill .label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #0e1621;
+      }
+
+      .chat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(1, 18, 30, 0.7);
+        display: grid;
+        place-items: center;
+        color: var(--text);
+        border: 2px solid rgba(255,255,255,0.18);
+      }
+
+      .chat-widget {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        width: min(360px, calc(100vw - 24px));
+        background: rgba(9, 15, 25, 0.97);
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 24px;
+        box-shadow: 0 26px 70px rgba(0, 0, 0, 0.52);
+        overflow: hidden;
+        transform: translateY(26px);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.26s ease;
+        z-index: 100;
+      }
+
+      .chat-widget.open {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        background: rgba(18, 27, 41, 0.96);
+      }
+
+      .chat-header strong {
+        font-size: 1.1rem;
+        letter-spacing: -0.04em;
+      }
+
+      .chat-close {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.03);
+        color: var(--text);
+        cursor: pointer;
+      }
+
+      .chat-body {
+        max-height: 320px;
+        overflow-y: auto;
+        padding: 18px 16px 12px;
+        background: rgba(9, 15, 25, 0.92);
+      }
+
+      .chat-message {
+        display: flex;
+        margin-bottom: 12px;
+      }
+
+      .chat-message.user {
+        justify-content: flex-end;
+      }
+
+      .chat-bubble {
+        max-width: 78%;
+        padding: 10px 12px;
+        border-radius: 14px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .chat-message.bot .chat-bubble {
+        background: rgba(18, 27, 41, 0.96);
+        border: 1px solid rgba(212, 175, 55, 0.12);
+        color: var(--text);
+      }
+
+      .chat-message.user .chat-bubble {
+        background: linear-gradient(135deg, rgba(245, 214, 109, 0.98), rgba(212, 175, 55, 0.9));
+        color: #0d1320;
+        font-weight: 600;
+      }
+
+      .chat-form {
+        display: flex;
+        gap: 10px;
+        padding: 14px 16px 18px;
+        background: rgba(10, 16, 27, 0.98);
+        border-top: 1px solid rgba(255,255,255,0.06);
+      }
+
+      .chat-form input {
+        flex: 1;
+        min-height: 46px;
+        padding: 0 14px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        font-size: 0.96rem;
+      }
+
+      .chat-form button {
+        min-width: 92px;
+        min-height: 46px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(245, 214, 109, 1), rgba(212, 175, 55, 0.95));
+        color: #111820;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .chat-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--success);
+        box-shadow: 0 0 18px rgba(58, 231, 186, 0.8);
+        position: absolute;
+        right: 22px;
+        top: 18px;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        margin-top: 36px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 230px;
+        min-height: 82px;
+        border-radius: 38px;
+        font-size: clamp(1.5rem, 2vw, 2.4rem);
+        letter-spacing: -0.04em;
+        font-weight: 700;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, rgba(245, 214, 109, 1), rgba(212, 175, 55, 0.97));
+        color: rgba(18, 17, 14, 0.96);
+        box-shadow: 0 20px 50px rgba(212, 175, 55, 0.22);
+      }
+
+      .btn-secondary {
+        background: rgba(21, 45, 61, 0.7);
+        color: var(--text);
+      }
+
+      .lines {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(circle at 20% 30%, rgba(107, 229, 255, 0.8) 0 1px, transparent 1.4px),
+          radial-gradient(circle at 70% 80%, rgba(107, 229, 255, 0.8) 0 1px, transparent 1.4px),
+          radial-gradient(circle at 50% 50%, rgba(107, 229, 255, 0.8) 0 1px, transparent 1.4px);
+        background-size: 220px 220px;
+        opacity: 0.6;
+      }
+
+      .section {
+        padding: 60px 0;
+      }
+
+      .content-box {
+        background: rgba(8, 24, 39, 0.72);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      .about-wrap {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 30px;
+        align-items: center;
+      }
+
+      .about-box {
+        padding: 42px 32px;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        font-size: 0.8rem;
+        letter-spacing: 0.2em;
+        color: var(--primary-soft);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      h2 {
+        margin: 0 0 22px;
+        font-size: clamp(2.3rem, 4vw, 4rem);
+        letter-spacing: -0.06em;
+        line-height: 1;
+      }
+
+      p.lead {
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.2rem;
+        line-height: 1.7;
+      }
+
+      .checklist {
+        list-style: none;
+        margin: 28px 0 0;
+        padding: 0;
+        display: grid;
+        gap: 16px;
+      }
+
+      .checklist li {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: var(--soft);
+        font-size: 1.05rem;
+      }
+
+      .checklist li::before {
+        content: "✓";
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: rgba(58, 231, 186, 0.12);
+        color: var(--success);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .feature-card {
+        padding: 26px 22px;
+      }
+
+      .feature-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, rgba(91, 217, 255, 0.12), rgba(30, 111, 255, 0.12));
+        border: 1px solid rgba(133, 226, 255, 0.16);
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        color: var(--cyan);
+        margin-bottom: 20px;
+      }
+
+      .feature-card h3 {
+        margin: 0 0 12px;
+        font-size: 1.5rem;
+      }
+
+      .feature-card p {
+        margin: 0;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+
+      .team-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .team-card {
+        padding: 0;
+        overflow: hidden;
+        background: rgba(12, 20, 31, 0.78);
+      }
+
+      .team-photo {
+        width: 100%;
+        height: 320px;
+        object-fit: contain;
+        object-position: center top;
+        display: block;
+        background: linear-gradient(180deg, rgba(245, 214, 109, 0.18), rgba(20, 27, 36, 0.9));
+        padding: 8px 8px 0;
+      }
+
+      .team-content {
+        padding: 22px 20px 24px;
+      }
+
+      .team-name {
+        margin: 0 0 4px;
+        font-size: 1.55rem;
+      }
+
+      .team-role {
+        color: var(--primary-soft);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        margin-bottom: 10px;
+      }
+
+      .team-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .investor-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .investor-card {
+        padding: 24px 22px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .investor-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, rgba(245, 214, 109, 1), rgba(91, 217, 255, 0.6));
+      }
+
+      .investor-percent {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 92px;
+        min-height: 42px;
+        border-radius: 999px;
+        background: rgba(245, 214, 109, 0.1);
+        border: 1px solid rgba(245, 214, 109, 0.22);
+        color: var(--primary-soft);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+      }
+
+      .investor-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.65rem;
+      }
+
+      .investor-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .auth-shell {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 26px;
+        align-items: stretch;
+      }
+
+      .auth-panel {
+        padding: 32px 28px;
+      }
+
+      .auth-intro {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .auth-intro .checklist {
+        margin-top: 22px;
+      }
+
+      .auth-card {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .auth-tabs {
+        display: flex;
+        background: rgba(255,255,255,0.02);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+      }
+
+      .auth-tab {
+        flex: 1;
+        min-height: 64px;
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        cursor: pointer;
+      }
+
+      .auth-tab.active {
+        background: linear-gradient(135deg, rgba(245, 214, 109, 0.12), rgba(212, 175, 55, 0.04));
+        color: var(--soft);
+        border-bottom: 2px solid var(--primary);
+      }
+
+      .auth-form {
+        display: none;
+        padding: 28px 24px 26px;
+      }
+
+      .auth-form.active {
+        display: block;
+      }
+
+      .auth-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .field.full {
+        grid-column: 1 / -1;
+      }
+
+      .field label {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        min-height: 52px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.08);
+        background: rgba(255,255,255,0.02);
+        color: var(--text);
+        padding: 0 14px;
+        font-size: 0.95rem;
+      }
+
+      .field input::placeholder {
+        color: rgba(245, 239, 228, 0.45);
+      }
+
+      .auth-submit {
+        width: 100%;
+        min-height: 58px;
+        margin-top: 18px;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, rgba(245, 214, 109, 1), rgba(212, 175, 55, 0.95));
+        color: #14120d;
+      }
+
+      .form-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .checkbox input {
+        accent-color: var(--primary);
+      }
+
+      .text-link {
+        color: var(--primary-soft);
+        font-weight: 600;
+      }
+
+      .roadmap {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .step-card {
+        padding: 24px 22px;
+      }
+
+      .step-tag {
+        display: block;
+        color: var(--cyan);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 0.76rem;
+        margin-bottom: 14px;
+      }
+
+      .step-card h3 {
+        margin: 0 0 16px;
+        font-size: 1.7rem;
+      }
+
+      .step-card ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+        color: var(--muted);
+      }
+
+      .step-card li::before {
+        content: "•";
+        color: var(--cyan);
+        margin-right: 10px;
+      }
+
+      .market-widget-box {
+        position: relative;
+        height: 100%;
+        min-height: 300px;
+        border-radius: 22px;
+        overflow: hidden;
+        background: rgba(7, 13, 20, 0.9);
+        border: 1px solid rgba(212, 175, 55, 0.15);
+      }
+
+      .market-widget-box .tradingview-widget-container,
+      .market-widget-box .tradingview-widget-container > div,
+      .market-widget-box iframe {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .dashboard-shell {
+        display: none;
+        padding: 32px 0 12px;
+      }
+
+      .dashboard-shell.visible {
+        display: block;
+      }
+
+      .dashboard-panel {
+        background: rgba(10, 17, 28, 0.82);
+        border: 1px solid rgba(212, 175, 55, 0.18);
+        border-radius: 28px;
+        box-shadow: 0 25px 65px rgba(0, 0, 0, 0.32);
+        padding: 26px 24px 24px;
+      }
+
+      .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 20px;
+      }
+
+      .dashboard-btn {
+        min-height: 52px;
+        min-width: 140px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(245, 214, 109, 1), rgba(212, 175, 55, 0.96));
+        color: #11181e;
+        font-weight: 800;
+        cursor: pointer;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .stat-card {
+        background: rgba(18, 27, 41, 0.9);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 18px 18px 16px;
+      }
+
+      .stat-label {
+        display: block;
+        color: var(--muted);
+        font-size: 0.83rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      .stat-value {
+        font-size: clamp(1.8rem, 2vw, 2.5rem);
+        font-weight: 800;
+        letter-spacing: -0.06em;
+        margin-bottom: 8px;
+      }
+
+      .stat-change {
+        color: var(--success);
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 1.25fr 0.75fr;
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .dashboard-card {
+        background: rgba(18, 27, 41, 0.9);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 18px 18px 14px;
+      }
+
+      .market-overview-card {
+        min-height: 320px;
+      }
+
+      .market-mini-chart {
+        height: 240px;
+        min-height: 240px;
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(10, 16, 26, 0.9);
+      }
+
+      .market-mini-chart .tradingview-widget-container,
+      .market-mini-chart .tradingview-widget-container > div,
+      .market-mini-chart iframe {
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .leaderboard-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .leaderboard-item {
+        display: grid;
+        grid-template-columns: 32px 1fr auto auto;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.04);
+      }
+
+      .leader-rank {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(212, 175, 55, 0.12);
+        color: var(--primary-soft);
+        font-weight: 800;
+      }
+
+      .leader-name {
+        font-weight: 700;
+      }
+
+      .leader-meta {
+        font-size: 0.72rem;
+        color: var(--muted);
+      }
+
+      .leader-metric {
+        text-align: right;
+      }
+
+      .leader-amount {
+        display: block;
+        font-weight: 700;
+      }
+
+      .leader-profit {
+        display: block;
+        color: var(--success);
+        font-size: 0.75rem;
+      }
+
+      .dashboard-card h3 {
+        margin: 0 0 14px;
+        font-size: 1.5rem;
+        letter-spacing: -0.04em;
+      }
+
+      .watchlist,
+      .activity-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .watch-item,
+      .activity-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        background: rgba(255,255,255,0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.04);
+      }
+
+      .coin-name {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .coin-price {
+        color: var(--muted);
+      }
+
+      .coin-up {
+        color: var(--success);
+        font-weight: 700;
+      }
+
+      .activity-list li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .activity-list small {
+        color: var(--muted);
+      }
+
+      .activity-empty {
+        color: var(--muted);
+        font-style: italic;
+      }
+
+      .notification-container {
+        position: fixed;
+        left: 24px;
+        bottom: 24px;
+        z-index: 130;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        pointer-events: none;
+      }
+
+      .toast-notification {
+        display: block;
+        position: relative;
+        width: 320px;
+        max-width: calc(100vw - 32px);
+        min-width: 260px;
+        background: linear-gradient(180deg, rgba(14, 22, 34, 0.98), rgba(10, 15, 25, 0.98));
+        border: 1px solid rgba(212, 175, 55, 0.26);
+        border-left: 4px solid var(--primary);
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.36);
+        padding: 14px 16px 12px;
+        color: var(--text);
+        opacity: 0;
+        transform: translateX(26px);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        will-change: opacity, transform;
+      }
+
+      .toast-notification.visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .toast-notification::before {
+        content: "✓";
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(123, 231, 178, 0.12);
+        color: var(--success);
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .toast-notification strong {
+        display: block;
+        font-size: 0.95rem;
+        margin: 0 0 4px 30px;
+        line-height: 1.4;
+      }
+
+      .toast-notification span {
+        display: block;
+        margin-left: 30px;
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      @keyframes toastSlideIn {
+        from {
+          opacity: 0;
+          transform: translateX(26px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .about-wrap,
+        .features-grid,
+        .team-grid,
+        .investor-grid,
+        .auth-shell,
+        .roadmap,
+        .dashboard-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar-inner {
+          min-height: auto;
+          padding: 18px 0;
+          flex-wrap: wrap;
+          gap: 14px;
+        }
+
+        .nav-actions {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .brand {
+          font-size: 2.2rem;
+        }
+
+        .hero {
+          padding-top: 18px;
+          min-height: auto;
+        }
+
+        .title {
+          font-size: clamp(2.8rem, 9vw, 5rem);
+        }
+
+        .cta-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .btn {
+          width: 100%;
+          min-width: 0;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .chart-zone {
+          min-height: 280px;
+          height: 280px;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .container,
+        .hero-inner {
+          width: min(100% - 22px, 1280px);
+        }
+
+        .topbar-inner {
+          min-height: 74px;
+        }
+
+        .brand {
+          font-size: 1.8rem;
+        }
+
+        .nav-actions {
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+
+        .account-badge {
+          font-size: 0.75rem;
+          padding: 0 10px;
+        }
+
+        .language-switcher {
+          min-width: 110px;
+          height: 40px;
+        }
+
+        .menu-button {
+          width: 48px;
+          height: 48px;
+        }
+
+        .title-mark {
+          margin-bottom: 18px;
+          gap: 10px;
+        }
+
+        .title-mark::before {
+          width: 22px;
+          height: 22px;
+        }
+
+        .ticker-wrap {
+          margin-top: 28px;
+          gap: 12px;
+        }
+
+        .coin-badge {
+          width: 100%;
+        }
+
+        .price-stack {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .price-value {
+          font-size: 2.1rem;
+        }
+
+        .gain {
+          font-size: 1rem;
+        }
+
+        .chart-zone {
+          min-height: 220px;
+          height: 220px;
+        }
+
+        .chat-pill {
+          display: none;
+        }
+
+        .dashboard-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .dashboard-panel {
+          padding: 20px 16px;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container,
+        .hero-inner {
+          width: min(100% - 18px, 1280px);
+        }
+
+        .brand {
+          font-size: 1.6rem;
+        }
+
+        .brand-mark {
+          width: 34px;
+          height: 34px;
+        }
+
+        .nav-actions {
+          justify-content: flex-end;
+        }
+
+        .account-badge {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .language-switcher {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard-card,
+        .stat-card {
+          padding: 14px 12px;
+        }
+
+        .watch-item,
+        .activity-list li {
+          padding: 9px 10px;
+        }
+
+        .btn {
+          min-height: 62px;
+          font-size: 1.2rem;
+        }
+
+        .chart-zone {
+          min-height: 180px;
+          height: 180px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>UNITRADES</div>
+        <div class="nav-actions">
+          <div id="accountBadge" class="account-badge" hidden></div>
+          <label class="sr-only" for="languageSelect" style="position:absolute;left:-9999px;">Language</label>
+          <select id="languageSelect" class="language-switcher" aria-label="Select language">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="ar">العربية</option>
+            <option value="zh">中文</option>
+            <option value="pt">Português</option>
+            <option value="ja">日本語</option>
+          </select>
+          <button class="menu-button" aria-label="Open menu"><span></span></button>
+        </div>
+      </div>
+    </header>
+
+    <section id="dashboardShell" class="dashboard-shell" aria-live="polite">
+      <div class="container dashboard-panel">
+        <div class="dashboard-header">
+          <div>
+            <span class="eyebrow">Portfolio overview</span>
+            <h2>Welcome back, <span id="dashboardUserName">Trader</span></h2>
+          </div>
+          <a href="deposit.html" class="dashboard-btn" style="display:inline-flex;align-items:center;justify-content:center;">Deposit</a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-label">Total balance</span>
+            <div class="stat-value" id="totalBalance">$0.00</div>
+            <div class="stat-change">+0.00%</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Net profit</span>
+            <div class="stat-value" id="netProfit">$0.00</div>
+            <div class="stat-change">+0.00%</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Open positions</span>
+            <div class="stat-value" id="openPositions">0</div>
+            <div class="stat-change">0 active</div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Win rate</span>
+            <div class="stat-value" id="winRate">0%</div>
+            <div class="stat-change">+0.0 pts</div>
+          </div>
+        </div>
+
+        <div class="dashboard-layout">
+          <div class="dashboard-card market-overview-card">
+            <h3>Current market</h3>
+            <div class="market-mini-chart">
+              <div class="tradingview-widget-container">
+                <div id="dashboardMarketChart"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <h3>Top 10 investors</h3>
+            <div id="topInvestorsList" class="leaderboard-list"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-layout">
+          <div class="dashboard-card">
+            <h3>Watchlist</h3>
+            <ul class="watchlist">
+              <li class="watch-item"><span class="coin-name">BTC / USD</span><span class="coin-price" id="btcWatch">$0.00</span><span class="coin-up">+0.0%</span></li>
+              <li class="watch-item"><span class="coin-name">ETH / USD</span><span class="coin-price" id="ethWatch">$0.00</span><span class="coin-up">+0.0%</span></li>
+              <li class="watch-item"><span class="coin-name">SOL / USD</span><span class="coin-price">$0.00</span><span class="coin-up">+0.0%</span></li>
+              <li class="watch-item"><span class="coin-name">XRP / USD</span><span class="coin-price">$0.00</span><span class="coin-up">+0.0%</span></li>
+            </ul>
+          </div>
+
+          <div class="dashboard-card">
+            <h3>Recent activity</h3>
+            <ul class="activity-list">
+              <li class="activity-empty"><span>No recent activity</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main class="hero">
+      <div class="hero-inner">
+        <div class="hero-grid">
+          <div class="orb orb-one"></div>
+          <div class="orb orb-two"></div>
+
+          <div class="hero-copy">
+            <h1 class="title">
+              <span class="title-mark"></span>
+              Smart Execution For
+              <span class="accent">Modern Crypto Investors</span>
+            </h1>
+
+            <div class="ticker-wrap">
+              <div class="coin-badge">
+                <div class="coin-coin">₿</div>
+                <div class="coin-meta">
+                  <strong>BTCUSDT</strong>
+                  <span>BITCOIN / TETHER</span>
+                </div>
+              </div>
+
+              <div class="price-stack">
+                <div class="price-value">Loading...</div>
+                <div class="gain">--</div>
+              </div>
+            </div>
+
+            <div class="chart-zone" aria-label="BTCUSDT live chart">
+              <div class="tradingview-widget-container">
+                <div id="tradingview_btcusdt"></div>
+              </div>
+              <div class="chat-pill" id="chatToggle" aria-label="Open support chat">
+                <div class="label">Chat</div>
+                <div class="chat-icon">💬</div>
+                <span class="chat-dot"></span>
+              </div>
+            </div>
+
+            <div class="chat-widget" id="chatWidget" aria-live="polite">
+              <div class="chat-header">
+                <strong>UNITRADES Support</strong>
+                <button class="chat-close" id="chatClose" aria-label="Close chat">×</button>
+              </div>
+              <div class="chat-body" id="chatMessages"></div>
+              <form class="chat-form" id="chatForm">
+                <input id="chatInput" type="text" placeholder="Send a message..." aria-label="Type your message" />
+                <button type="submit">Send</button>
+              </form>
+            </div>
+
+            <div id="notificationContainer" class="notification-container" aria-live="polite" aria-atomic="true"></div>
+
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+              new TradingView.widget({
+                "autosize": true,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#0d1320",
+                "hide_top_toolbar": true,
+                "hide_legend": true,
+                "save_image": false,
+                "container_id": "tradingview_btcusdt"
+              });
+
+              new TradingView.widget({
+                "autosize": true,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "15",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#0b1220",
+                "hide_top_toolbar": true,
+                "hide_legend": true,
+                "withdateranges": true,
+                "save_image": false,
+                "container_id": "tradingview_market_status"
+              });
+
+              if (typeof TradingView !== 'undefined' && TradingView.widget) {
+                new TradingView.widget({
+                  "autosize": true,
+                  "symbol": "BINANCE:BTCUSDT",
+                  "interval": "60",
+                  "timezone": "Etc/UTC",
+                  "theme": "dark",
+                  "style": "1",
+                  "locale": "en",
+                  "toolbar_bg": "#101a2a",
+                  "hide_top_toolbar": true,
+                  "hide_legend": true,
+                  "save_image": false,
+                  "container_id": "dashboardMarketChart"
+                });
+              }
+
+              const translations = {
+                en: {
+                  getStarted: 'Get Started',
+                  loginAccount: 'Login Account',
+                  whoWeAre: 'Who we are',
+                  globalTradingHub: 'UNITRADES Global Trading Hub',
+                  marketStatus: 'Market status',
+                  livePerformance: 'Live performance',
+                  whyChooseUsLabel: 'Why choose us',
+                  whyChooseUsTitle: 'Why choose UNITRADES',
+                  leadership: 'Leadership',
+                  managementTeam: 'Management team',
+                  investorClasses: 'Investor classes',
+                  whoInvests: 'Who invests on UNITRADES',
+                  roadmap: 'Roadmap',
+                  roadmapTitle: 'Growth strategy and execution plan'
+                },
+                es: {
+                  getStarted: 'Comenzar',
+                  loginAccount: 'Iniciar sesión',
+                  whoWeAre: 'Quiénes somos',
+                  globalTradingHub: 'UNITRADES Centro de Trading Global',
+                  marketStatus: 'Estado del mercado',
+                  livePerformance: 'Rendimiento en vivo',
+                  whyChooseUsLabel: 'Por qué elegirnos',
+                  whyChooseUsTitle: 'Por qué elegir UNITRADES',
+                  leadership: 'Liderazgo',
+                  managementTeam: 'Equipo directivo',
+                  investorClasses: 'Clases de inversionistas',
+                  whoInvests: 'Quién invierte en UNITRADES',
+                  roadmap: 'Ruta de crecimiento',
+                  roadmapTitle: 'Estrategia de crecimiento y plan de ejecución'
+                },
+                fr: {
+                  getStarted: 'Commencer',
+                  loginAccount: 'Connexion',
+                  whoWeAre: 'Qui nous sommes',
+                  globalTradingHub: 'UNITRADES Hub de Trading Global',
+                  marketStatus: 'État du marché',
+                  livePerformance: 'Performance en direct',
+                  whyChooseUsLabel: 'Pourquoi nous choisir',
+                  whyChooseUsTitle: 'Pourquoi choisir UNITRADES',
+                  leadership: 'Direction',
+                  managementTeam: 'Équipe de direction',
+                  investorClasses: 'Classes d’investisseurs',
+                  whoInvests: 'Qui investit sur UNITRADES',
+                  roadmap: 'Feuille de route',
+                  roadmapTitle: 'Stratégie de croissance et plan d’exécution'
+                },
+                de: {
+                  getStarted: 'Loslegen',
+                  loginAccount: 'Anmelden',
+                  whoWeAre: 'Wer wir sind',
+                  globalTradingHub: 'UNITRADES Globales Trading-Hub',
+                  marketStatus: 'Marktstatus',
+                  livePerformance: 'Live-Leistung',
+                  whyChooseUsLabel: 'Warum wir',
+                  whyChooseUsTitle: 'Warum UNITRADES wählen',
+                  leadership: 'Führung',
+                  managementTeam: 'Management-Team',
+                  investorClasses: 'Investorengruppen',
+                  whoInvests: 'Wer investiert in UNITRADES',
+                  roadmap: 'Roadmap',
+                  roadmapTitle: 'Wachstumsstrategie und Umsetzungsplan'
+                },
+                ar: {
+                  getStarted: 'ابدأ الآن',
+                  loginAccount: 'تسجيل الدخول',
+                  whoWeAre: 'من نحن',
+                  globalTradingHub: 'UNITRADES مركز التداول العالمي',
+                  marketStatus: 'حالة السوق',
+                  livePerformance: 'الأداء المباشر',
+                  whyChooseUsLabel: 'لماذا نحن',
+                  whyChooseUsTitle: 'لماذا تختار UNITRADES',
+                  leadership: 'القيادة',
+                  managementTeam: 'فريق الإدارة',
+                  investorClasses: 'فئات المستثمرين',
+                  whoInvests: 'من يستثمر في UNITRADES',
+                  roadmap: 'خارطة الطريق',
+                  roadmapTitle: 'استراتيجية النمو وخطة التنفيذ'
+                },
+                zh: {
+                  getStarted: '开始',
+                  loginAccount: '登录账户',
+                  whoWeAre: '关于我们',
+                  globalTradingHub: 'UNITRADES 全球交易中心',
+                  marketStatus: '市场状态',
+                  livePerformance: '实时表现',
+                  whyChooseUsLabel: '为什么选择我们',
+                  whyChooseUsTitle: '为什么选择 UNITRADES',
+                  leadership: '领导团队',
+                  managementTeam: '管理团队',
+                  investorClasses: '投资者类型',
+                  whoInvests: '谁在 UNITRADES 投资',
+                  roadmap: '路线图',
+                  roadmapTitle: '增长战略与执行计划'
+                },
+                pt: {
+                  getStarted: 'Começar',
+                  loginAccount: 'Entrar',
+                  whoWeAre: 'Quem somos',
+                  globalTradingHub: 'UNITRADES Hub Global de Trading',
+                  marketStatus: 'Status do mercado',
+                  livePerformance: 'Desempenho ao vivo',
+                  whyChooseUsLabel: 'Por que nos escolher',
+                  whyChooseUsTitle: 'Por que escolher UNITRADES',
+                  leadership: 'Liderança',
+                  managementTeam: 'Equipe de gestão',
+                  investorClasses: 'Classes de investidores',
+                  whoInvests: 'Quem investe na UNITRADES',
+                  roadmap: 'Roadmap',
+                  roadmapTitle: 'Estratégia de crescimento e plano de execução'
+                },
+                ja: {
+                  getStarted: '始める',
+                  loginAccount: 'ログイン',
+                  whoWeAre: '私たちについて',
+                  globalTradingHub: 'UNITRADES グローバルトレーディングハブ',
+                  marketStatus: 'マーケット状況',
+                  livePerformance: 'ライブパフォーマンス',
+                  whyChooseUsLabel: '選ぶ理由',
+                  whyChooseUsTitle: 'UNITRADESを選ぶ理由',
+                  leadership: '経営陣',
+                  managementTeam: 'マネジメントチーム',
+                  investorClasses: '投資家層',
+                  whoInvests: 'UNITRADESに投資する人',
+                  roadmap: 'ロードマップ',
+                  roadmapTitle: '成長戦略と実行計画'
+                }
+              };
+
+              function applyTranslations(language = 'en') {
+                const dictionary = translations[language] || translations.en;
+                document.documentElement.lang = language;
+
+                document.querySelectorAll('[data-i18n]').forEach((element) => {
+                  const key = element.dataset.i18n;
+                  if (typeof dictionary[key] === 'string') {
+                    element.textContent = dictionary[key];
+                  }
+                });
+
+              }
+
+              const CHAT_KEY = 'unitrades_chat_messages';
+
+              function getChatMessages() {
+                try {
+                  const saved = localStorage.getItem(CHAT_KEY);
+                  return saved ? JSON.parse(saved) : [];
+                } catch (error) {
+                  return [];
+                }
+              }
+
+              function saveChatMessages(messages) {
+                localStorage.setItem(CHAT_KEY, JSON.stringify(messages));
+              }
+
+              function addMessage(text, sender = 'bot') {
+                const messages = getChatMessages();
+                const entry = {
+                  id: Date.now() + Math.random(),
+                  sender,
+                  text,
+                  time: new Date().toISOString()
+                };
+                messages.push(entry);
+                saveChatMessages(messages);
+                renderChat();
+              }
+
+              async function fetchMarketContext() {
+                try {
+                  const [priceResponse, globalResponse] = await Promise.all([
+                    fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd&include_24hr_change=true').then((response) => response.json()).catch(() => ({})),
+                    fetch('https://api.coingecko.com/api/v3/global').then((response) => response.json()).catch(() => ({ data: {} }))
+                  ]);
+
+                  const btc = priceResponse.bitcoin || {};
+                  const eth = priceResponse.ethereum || {};
+                  const market = globalResponse.data || {};
+
+                  return {
+                    btcUsd: Number(btc.usd || 0),
+                    btcChange: Number(btc.usd_24h_change || 0),
+                    ethUsd: Number(eth.usd || 0),
+                    ethChange: Number(eth.usd_24h_change || 0),
+                    marketCapChange: Number(market.market_cap_change_percentage_24h_usd || 0),
+                    totalMarketCap: Number(market.total_market_cap?.usd || 0)
+                  };
+                } catch (error) {
+                  return {
+                    btcUsd: 0,
+                    btcChange: 0,
+                    ethUsd: 0,
+                    ethChange: 0,
+                    marketCapChange: 0,
+                    totalMarketCap: 0
+                  };
+                }
+              }
+
+              function formatMoney(value) {
+                if (!value || value === 0) return 'N/A';
+                return new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  maximumFractionDigits: value >= 1000 ? 0 : 2
+                }).format(value);
+              }
+
+              function formatPercent(value) {
+                if (value === null || value === undefined || Number.isNaN(value)) return 'N/A';
+                const sign = value >= 0 ? '+' : '';
+                return `${sign}${value.toFixed(2)}%`;
+              }
+
+              async function autoReply(userText) {
+                const normalized = userText.toLowerCase();
+                const market = await fetchMarketContext();
+
+                if (normalized.includes('wallet') || normalized.includes('deposit')) {
+                  return 'Your wallet and deposit support can be reviewed through the account dashboard. Please check your secure portal for updated funding options.';
+                }
+
+                if (normalized.includes('btc') || normalized.includes('bitcoin') || normalized.includes('market') || normalized.includes('trade')) {
+                  if (market.btcUsd && market.btcChange !== null) {
+                    return `Current market snapshot: BTC is trading at ${formatMoney(market.btcUsd)} with a 24h change of ${formatPercent(market.btcChange)}. ETH is at ${formatMoney(market.ethUsd)} with ${formatPercent(market.ethChange)} change. The broader crypto market is showing ${formatPercent(market.marketCapChange)} movement, which suggests UNITRADES is monitoring a ${market.marketCapChange >= 0 ? 'positive' : 'cautious'} market environment.`;
+                  }
+
+                  return 'Our trading desk monitors BTCUSDT trends closely. We can help review entry timing, risk exposure, and portfolio strategy.';
+                }
+
+                if (normalized.includes('support') || normalized.includes('help')) {
+                  return 'A UNITRADES specialist is ready to assist with account access, onboarding, and strategy guidance.';
+                }
+
+                if (normalized.includes('hello') || normalized.includes('hi')) {
+                  return 'Hello! I’m the UNITRADES market assistant. I can provide live crypto market context, trading insights, and account guidance.';
+                }
+
+                return 'Thank you for contacting UNITRADES. A specialist will review your request and follow up with the best next step.';
+              }
+
+              function renderChat() {
+                const messages = getChatMessages();
+                const chatMessages = document.getElementById('chatMessages');
+
+                if (!chatMessages) return;
+
+                if (!messages.length) {
+                  chatMessages.innerHTML = '<div class="chat-message bot"><div class="chat-bubble">Hello! I’m the UNITRADES assistant. How can I help today?</div></div>';
+                  saveChatMessages([
+                    { id: Date.now(), sender: 'bot', text: 'Hello! I’m the UNITRADES assistant. How can I help today?', time: new Date().toISOString() }
+                  ]);
+                  return;
+                }
+
+                chatMessages.innerHTML = messages.map((message) => {
+                  return `
+                    <div class="chat-message ${message.sender}">
+                      <div class="chat-bubble">${message.text}</div>
+                    </div>
+                  `;
+                }).join('');
+
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+              }
+
+              function ensureNotificationContainer() {
+                let container = document.getElementById('notificationContainer');
+
+                if (!container) {
+                  container = document.createElement('div');
+                  container.id = 'notificationContainer';
+                  container.className = 'notification-container';
+                  container.setAttribute('aria-live', 'polite');
+                  container.setAttribute('aria-atomic', 'true');
+                  document.body.appendChild(container);
+                } else if (container.parentElement !== document.body) {
+                  document.body.appendChild(container);
+                }
+
+                container.style.position = 'fixed';
+                container.style.left = '24px';
+                container.style.bottom = '24px';
+                container.style.zIndex = '130';
+                container.style.display = 'flex';
+                container.style.flexDirection = 'column';
+                container.style.gap = '12px';
+                container.style.pointerEvents = 'none';
+
+                return container;
+              }
+
+              function showProfitNotifications() {
+                const container = ensureNotificationContainer();
+
+                const pool = [
+                  { name: 'Jennifer', city: 'Houston', amount: 4000 },
+                  { name: 'Marcus', city: 'Chicago', amount: 2600 },
+                  { name: 'Priya', city: 'New York', amount: 3150 },
+                  { name: 'Oliver', city: 'London', amount: 4800 },
+                  { name: 'Sofia', city: 'Toronto', amount: 2200 },
+                  { name: 'David', city: 'Miami', amount: 3900 },
+                  { name: 'Amina', city: 'Dubai', amount: 5300 },
+                  { name: 'Lucas', city: 'Singapore', amount: 2750 },
+                  { name: 'Emma', city: 'Manchester', amount: 3600 },
+                  { name: 'Noah', city: 'Berlin', amount: 4100 },
+                  { name: 'Daniel', city: 'Los Angeles', amount: 30250 },
+                  { name: 'Fatima', city: 'Abu Dhabi', amount: 45750 },
+                  { name: 'Ethan', city: 'Sydney', amount: 68000 },
+                  { name: 'Maya', city: 'Paris', amount: 78500 },
+                  { name: 'Leo', city: 'Frankfurt', amount: 93000 },
+                  { name: 'Harper', city: 'Toronto', amount: 52150 },
+                  { name: 'Isaac', city: 'Dubai', amount: 100000 },
+                  { name: 'Chloe', city: 'London', amount: 36800 },
+                  { name: 'Nathan', city: 'New York', amount: 74200 },
+                  { name: 'Zara', city: 'Doha', amount: 62400 }
+                ];
+
+                const item = pool[Math.floor(Math.random() * pool.length)];
+                const formatter = new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                  maximumFractionDigits: 0
+                });
+
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification';
+                toast.style.position = 'relative';
+                toast.style.display = 'block';
+                toast.style.width = '320px';
+                toast.style.maxWidth = 'calc(100vw - 32px)';
+                toast.innerHTML = `
+                  <strong>${item.name} from ${item.city} received ${formatter.format(item.amount)}</strong>
+                  <span>Profit payout confirmed</span>
+                `;
+
+                container.appendChild(toast);
+
+                requestAnimationFrame(() => {
+                  toast.classList.add('visible');
+                });
+
+                setTimeout(() => {
+                  toast.classList.remove('visible');
+                  setTimeout(() => toast.remove(), 400);
+                }, 7000);
+              }
+
+              function startProfitNotificationLoop() {
+                if (window.__unitradesNotificationLoop) {
+                  return;
+                }
+
+                showProfitNotifications();
+                setTimeout(showProfitNotifications, 1800);
+                window.__unitradesNotificationLoop = setInterval(showProfitNotifications, 10000);
+              }
+
+              function renderDashboardActivity(activityItems = null) {
+                const list = document.querySelector('.activity-list');
+                if (!list) return;
+
+                const items = Array.isArray(activityItems) && activityItems.length ? activityItems : ['No recent activity'];
+
+                if (items.length === 1 && items[0] === 'No recent activity') {
+                  list.innerHTML = '<li class="activity-empty"><span>No recent activity</span></li>';
+                  return;
+                }
+
+                list.innerHTML = items.map((item) => {
+                  if (typeof item === 'string') {
+                    return `<li><span>${item}</span><small>Recent</small></li>`;
+                  }
+
+                  return `<li><span>${item.title || item.text || 'Portfolio update'}</span><small>${item.time || 'Recent'}</small></li>`;
+                }).join('');
+              }
+
+              function renderTopInvestors() {
+                const leaderboard = document.getElementById('topInvestorsList');
+                if (!leaderboard) return;
+
+                const investors = [
+                  { name: 'Alicia Morgan', invested: 1200000, profit: 6242500 },
+                  { name: 'Daniel Brooks', invested: 1150000, profit: 5983200 },
+                  { name: 'Sophia Reed', invested: 1100000, profit: 5718400 },
+                  { name: 'Nathan Cole', invested: 1050000, profit: 5461300 },
+                  { name: 'Olivia James', invested: 980000, profit: 5097400 },
+                  { name: 'Marcus Lee', invested: 930000, profit: 4833500 },
+                  { name: 'Emma Clark', invested: 880000, profit: 4578600 },
+                  { name: 'Ryan Patel', invested: 820000, profit: 4269200 },
+                  { name: 'Isabella Ross', invested: 760000, profit: 3954600 },
+                  { name: 'Kevin Walker', invested: 700000, profit: 3642700 }
+                ];
+
+                leaderboard.innerHTML = investors.map((investor, index) => `
+                  <div class="leaderboard-item">
+                    <div class="leader-rank">${index + 1}</div>
+                    <div>
+                      <div class="leader-name">${investor.name}</div>
+                      <div class="leader-meta">Top investor</div>
+                    </div>
+                    <div class="leader-metric">
+                      <span class="leader-amount">$${Number(investor.invested).toLocaleString('en-US')}</span>
+                      <span class="leader-meta">invested</span>
+                    </div>
+                    <div class="leader-metric">
+                      <span class="leader-amount">$${Number(investor.profit).toLocaleString('en-US')}</span>
+                      <span class="leader-profit">profit</span>
+                    </div>
+                  </div>
+                `).join('');
+              }
+
+              async function updateBitcoinTicker() {
+                const priceEl = document.querySelector('.price-value');
+                const gainEl = document.querySelector('.gain');
+
+                if (!priceEl || !gainEl) return;
+
+                try {
+                  const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+                  const data = await response.json();
+                  const btc = data.bitcoin || {};
+                  const price = Number(btc.usd || 0);
+                  const change = Number(btc.usd_24h_change || 0);
+
+                  if (!price) {
+                    priceEl.textContent = 'Unavailable';
+                    gainEl.textContent = 'N/A';
+                    return;
+                  }
+
+                  const currencyFormatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  });
+
+                  const changeValue = (price * change) / 100;
+                  const sign = change >= 0 ? '+' : '';
+
+                  priceEl.textContent = currencyFormatter.format(price);
+                  gainEl.textContent = `${sign}${change.toFixed(2)}% (${currencyFormatter.format(changeValue)})`;
+                } catch (error) {
+                  priceEl.textContent = 'Unavailable';
+                  gainEl.textContent = 'N/A';
+                }
+              }
+
+              document.addEventListener('DOMContentLoaded', function () {
+                const widget = document.getElementById('chatWidget');
+                const toggle = document.getElementById('chatToggle');
+                const closeBtn = document.getElementById('chatClose');
+                const form = document.getElementById('chatForm');
+                const input = document.getElementById('chatInput');
+                const languageSelect = document.getElementById('languageSelect');
+                const authTabs = document.querySelectorAll('.auth-tab');
+                const authForms = document.querySelectorAll('.auth-form');
+                const accountBadge = document.getElementById('accountBadge');
+                const dashboardShell = document.getElementById('dashboardShell');
+                const dashboardUserName = document.getElementById('dashboardUserName');
+                const totalBalance = document.getElementById('totalBalance');
+                const netProfit = document.getElementById('netProfit');
+                const openPositions = document.getElementById('openPositions');
+                const winRate = document.getElementById('winRate');
+                const btcWatch = document.getElementById('btcWatch');
+                const ethWatch = document.getElementById('ethWatch');
+                const guestHero = document.querySelector('.hero');
+                const guestSections = document.querySelectorAll('section.section');
+
+                startProfitNotificationLoop();
+
+                const currentUser = JSON.parse(localStorage.getItem('unitrades_current_user') || 'null');
+
+                if (currentUser) {
+                  const users = JSON.parse(localStorage.getItem('unitrades_users') || '[]');
+                  const userRecord = users.find((user) => user.email && currentUser.email && user.email.toLowerCase() === currentUser.email.toLowerCase()) || currentUser;
+                  const dashboard = userRecord.dashboard || {};
+
+                  if (userRecord && userRecord.email) {
+                    localStorage.setItem('unitrades_current_user', JSON.stringify({
+                      firstName: userRecord.firstName || currentUser.firstName || 'Trader',
+                      lastName: userRecord.lastName || currentUser.lastName || '',
+                      email: userRecord.email,
+                      role: userRecord.role || currentUser.role || 'user',
+                      dashboard: dashboard
+                    }));
+                  }
+
+                  const balance = Number(dashboard.balance || 0);
+                  const profit = Number(dashboard.profit || 0);
+                  const positions = Number(dashboard.positions || 0);
+                  const rate = Number(dashboard.winRate || 0);
+                  const activity = Array.isArray(dashboard.recentActivity) && dashboard.recentActivity.length ? dashboard.recentActivity : ['No recent activity'];
+
+                  if (accountBadge) {
+                    accountBadge.hidden = false;
+                    accountBadge.innerHTML = `Welcome, ${userRecord.firstName || currentUser.firstName || 'Trader'} <a href="#" class="logout-link" id="logoutLink">Logout</a>`;
+
+                    document.getElementById('logoutLink').addEventListener('click', function (event) {
+                      event.preventDefault();
+                      localStorage.removeItem('unitrades_current_user');
+                      window.location.reload();
+                    });
+                  }
+
+                  if (dashboardUserName) {
+                    dashboardUserName.textContent = userRecord.firstName || currentUser.firstName || 'Trader';
+                  }
+
+                  if (dashboardShell) {
+                    dashboardShell.classList.add('visible');
+                  }
+
+                  if (guestHero) {
+                    guestHero.style.display = 'none';
+                  }
+
+                  guestSections.forEach((section) => {
+                    section.style.display = 'none';
+                  });
+
+                  if (totalBalance) totalBalance.textContent = `$${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                  if (netProfit) netProfit.textContent = `$${profit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                  if (openPositions) openPositions.textContent = positions;
+                  if (winRate) winRate.textContent = `${rate.toFixed(1)}%`;
+                  if (btcWatch) btcWatch.textContent = `$${Number(dashboard.btcWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                  if (ethWatch) ethWatch.textContent = `$${Number(dashboard.ethWatch || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                  renderDashboardActivity(activity);
+                  renderTopInvestors();
+                }
+
+                authTabs.forEach((tab) => {
+                  tab.addEventListener('click', function () {
+                    const target = this.dataset.tab;
+
+                    authTabs.forEach((item) => item.classList.toggle('active', item === this));
+                    authForms.forEach((panel) => {
+                      panel.classList.toggle('active', panel.id === `${target}Form`);
+                    });
+                  });
+                });
+
+                if (languageSelect) {
+                  languageSelect.addEventListener('change', function () {
+                    applyTranslations(this.value);
+                  });
+                }
+
+                applyTranslations('en');
+                updateBitcoinTicker();
+                setInterval(updateBitcoinTicker, 30000);
+
+                renderChat();
+
+                toggle.addEventListener('click', function () {
+                  widget.classList.toggle('open');
+                });
+
+                closeBtn.addEventListener('click', function () {
+                  widget.classList.remove('open');
+                });
+
+                form.addEventListener('submit', async function (event) {
+                  event.preventDefault();
+                  const text = input.value.trim();
+
+                  if (!text) return;
+
+                  addMessage(text, 'user');
+                  input.value = '';
+
+                  const reply = await autoReply(text);
+                  addMessage(reply, 'bot');
+                });
+              });
+            </script>
+
+            <div class="cta-row">
+              <a href="register.html" class="btn btn-primary" data-i18n="getStarted">Get Started</a>
+              <a href="login.html" class="btn btn-secondary" data-i18n="loginAccount">Login Account</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="section">
+      <div class="container about-wrap">
+        <div class="content-box about-box">
+          <span class="eyebrow" data-i18n="whoWeAre">Who we are</span>
+          <h2 data-i18n="globalTradingHub">UNITRADES Global Trading Hub</h2>
+          <p class="lead">
+            We provide high-conviction trading opportunities designed to help investors grow with disciplined strategy and smart execution.
+          </p>
+          <ul class="checklist">
+            <li>Algorithm-driven portfolio strategy</li>
+            <li>Institutional-grade market execution</li>
+            <li>Transparent risk management and reporting</li>
+          </ul>
+        </div>
+
+        <div class="content-box about-box">
+          <span class="eyebrow" data-i18n="marketStatus">Market status</span>
+          <h2 data-i18n="livePerformance">Live performance</h2>
+          <div class="market-widget-box">
+            <div class="tradingview-widget-container">
+              <div id="tradingview_market_status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow" data-i18n="leadership">Leadership</span>
+        <h2 data-i18n="managementTeam">Management team</h2>
+        <div class="team-grid">
+          <div class="content-box team-card">
+            <img class="team-photo" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80" alt="Alex Morgan" />
+            <div class="team-content">
+              <h3 class="team-name">Alex Morgan</h3>
+              <div class="team-role">CEO</div>
+              <p>Leading strategy, partnerships, and platform growth.</p>
+            </div>
+          </div>
+
+          <div class="content-box team-card">
+            <img class="team-photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80" alt="Nadia Clarke" />
+            <div class="team-content">
+              <h3 class="team-name">Nadia Clarke</h3>
+              <div class="team-role">COO</div>
+              <p>Driving operations, execution, and client experience.</p>
+            </div>
+          </div>
+
+          <div class="content-box team-card">
+            <img class="team-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=80" alt="Marcus Lee" />
+            <div class="team-content">
+              <h3 class="team-name">Marcus Lee</h3>
+              <div class="team-role">Head of Trading</div>
+              <p>Focus on market research, portfolio direction, and execution.</p>
+            </div>
+          </div>
+
+          <div class="content-box team-card">
+            <img class="team-photo" src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80" alt="Sophia Hart" />
+            <div class="team-content">
+              <h3 class="team-name">Sophia Hart</h3>
+              <div class="team-role">Compliance</div>
+              <p>Ensuring trust, transparency, and strong governance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <span class="eyebrow" data-i18n="investorClasses">Investor classes</span>
+        <h2 data-i18n="whoInvests">Who invests on UNITRADES</h2>
+        <div class="investor-grid">
+          <div class="content-box investor-card">
+            <div class="investor-percent">20%</div>
+            <h3>Businessmen</h3>
+            <p>Capital-focused leaders building long-term growth.</p>
+          </div>
+
+          <div class="content-box investor-card">
+            <div class="investor-percent">50%</div>
+            <h3>Entrepreneurs</h3>
+            <p>Founders seeking diversified portfolio exposure.</p>
+          </div>
+
+          <div class="content-box investor-card">
+            <div class="investor-percent">25%</div>
+            <h3>Pensioners</h3>
+            <p>Long-term investors focused on stability and discipline.</p>
+          </div>
+
+          <div class="content-box investor-card">
+            <div class="investor-percent">5%</div>
+            <h3>Government officials</h3>
+            <p>Institutional stakeholders looking for credible access.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
